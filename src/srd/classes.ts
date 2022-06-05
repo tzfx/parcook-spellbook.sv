@@ -10,3 +10,10 @@ export const classes = {
     paladin,
     wizard,
 };
+
+export const randomClass = () =>
+    classes[
+        Object.keys(classes)[
+            Math.floor(Math.random() * Object.keys(classes).length)
+        ]
+    ];
