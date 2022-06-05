@@ -70,3 +70,35 @@ button:not(:disabled):active {
 button:focus {
     border-color: #666;
 }
+
+.abjuration {
+    background-color: blue;
+}
+
+.conjuration {
+    background-color: yellow;
+}
+
+.divination: {
+    background-color: grey;
+}
+
+.enchantment {
+    background-color: pink;
+}
+
+.evocation {
+    background-color: red;
+}
+
+.illusion {
+    background-color: purple;
+}
+
+.necromancy {
+    background-color: green;
+}
+
+.transmutation {
+    background-color: orange;
+}

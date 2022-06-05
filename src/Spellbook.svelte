@@ -6,24 +6,30 @@
     import { CharacterStorage } from "./utils/storage";
     import type { prep } from "./prep";
     import { onMount } from "svelte";
+    import Spell from "./Spell.svelte";
     let classSpells = [];
     let maxSlotLevel = 0;
+    let toPrepare = 0;
     export let prep: prep;
 
     const mod = (score: number) => Math.floor((score - 10) / 2);
     const refreshSpells = () =>
         (classSpells = spells
-            .filter((spell) =>
-                spell.classes.fromClassList.find(
-                    (i) =>
-                        i.name.toLowerCase() === prep.clazz.name.toLowerCase()
-                )
+            .filter(
+                (spell) =>
+                    spell.classes.fromClassList.find(
+                        (i) =>
+                            i.name.toLowerCase() ===
+                            prep.clazz.name.toLowerCase()
+                    ) && !prep.prepared.includes(spell)
             )
             .sort((a, b) => (a.level < b.level ? -1 : +1)));
-    const refreshMaxSlotLevel = () =>
-        (maxSlotLevel = prep.clazz.classTableGroups
+    const refreshMaxSlotLevel = () => {
+        maxSlotLevel = prep.clazz.classTableGroups
             .find((group) => group.rowsSpellProgression != null)
-            ?.rowsSpellProgression[prep.level - 1].findIndex((n) => n === 0));
+            ?.rowsSpellProgression[prep.level - 1].findIndex((n) => n === 0);
+        toPrepare = calculatePrepared();
+    };
     const calculatePrepared = () => {
         let caster = 1;
         if (prep.clazz.casterProgression === "1/2") {
@@ -84,18 +90,11 @@
             <hr />
             <ul>
                 {#each classSpells.filter((s) => s.level === 0) as cantrip}
-                    <li class="spell">
-                        <label for={cantrip.name}>
-                            {cantrip.name}
-                            <input
-                                id={cantrip.name}
-                                on:click={(e) =>
-                                    (prep.catnips =
-                                        prep.catnips.concat(cantrip))}
-                                type="checkbox"
-                            /></label
-                        >
-                    </li>
+                    <Spell
+                        spell={cantrip}
+                        on:click={() =>
+                            (prep.catnips = prep.catnips.concat(cantrip))}
+                    />
                 {/each}
             </ul>
         </div>
@@ -105,38 +104,24 @@
             <hr />
             <ul>
                 {#each prep.catnips as catnip}
-                    <li class="spell">
-                        <label for={catnip.name}>
-                            {catnip.name}
-                            <input
-                                id={catnip.name}
-                                on:click={(e) =>
-                                    (prep.catnips = prep.catnips.filter(
-                                        (c) => c.name !== catnip.name
-                                    ))}
-                                type="checkbox"
-                            /></label
-                        >
-                    </li>
+                    <Spell
+                        spell={catnip}
+                        on:click={() =>
+                            (prep.catnips = prep.catnips.filter(
+                                (c) => c.name !== catnip.name
+                            ))}
+                    />
                 {/each}
             </ul>
         </div>
         <div>
             <h2>
-                You have {calculatePrepared()} spell{calculatePrepared() === 1
-                    ? ""
-                    : "s"} to prepare.
+                You have {toPrepare} spell{toPrepare === 1 ? "" : "s"} to prepare.
             </h2>
             <hr />
             <ul class="overflow-auto">
                 {#each classSpells.filter((s) => s.level !== 0 && s.level <= maxSlotLevel) as spell}
-                    <li class="spell">
-                        <label for={spell.name}>
-                            {spell.name}
-                            {convert(spell.level)}
-                            <input id={spell.name} type="checkbox" /></label
-                        >
-                    </li>
+                    <Spell {spell} />
                 {/each}
             </ul>
         </div>
