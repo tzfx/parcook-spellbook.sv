@@ -45,7 +45,7 @@
     });
 </script>
 
-<div>
+<div class="h-screen">
     <h1>Parcook-spellbook.sv</h1>
     <p class="p-1">
         A tool for the {getLazy()}
@@ -79,9 +79,8 @@
         <button>load</button>
         <button>save</button>
     </p>
-    <hr />
     <div class="grid grid-rows-2">
-        <div class="grid grid-cols-3">
+        <div class="grid grid-cols-3 border-t-2">
             <div>
                 <h2>
                     Choose {prep.clazz.cantripProgression != null
@@ -90,21 +89,26 @@
                         : 0} cantrips:
                 </h2>
                 <hr />
-                <ul>
-                    {#each allClassSpells.filter((s) => s.level === 0 && !prep.catnips.find((c) => s.name === c.name)) as catnip}
-                        <Spell
-                            spell={catnip}
-                            click={() =>
-                                (prep.catnips = prep.catnips.concat(catnip))}
-                        />
-                    {/each}
+                <ul class="overflow-auto h-48">
+                    {#if prep.clazz.cantripProgression !== null && prep.clazz.cantripProgression[prep.level + 1] - prep.catnips.length > 0}
+                        {#each allClassSpells.filter((s) => s.level === 0 && !prep.catnips.find((c) => s.name === c.name)) as catnip}
+                            <Spell
+                                spell={catnip}
+                                click={() =>
+                                    (prep.catnips =
+                                        prep.catnips.concat(catnip))}
+                            />
+                        {/each}
+                    {:else}
+                        {getOptimism()}
+                    {/if}
                 </ul>
             </div>
             <div>>></div>
             <div>
                 <h2>Chosen cantrips:</h2>
                 <hr />
-                <ul>
+                <ul class="overflow-auto h-48">
                     {#each prep.catnips as catnip}
                         <Spell
                             spell={catnip}
@@ -117,14 +121,14 @@
                 </ul>
             </div>
         </div>
-        <div class="grid grid-cols-3">
+        <div class="grid grid-cols-3 border-t-2">
             <div>
                 <h2>
                     You have {toPrepare} spell{toPrepare === 1 ? "" : "s"}
                     to prepare.
                 </h2>
                 <hr />
-                <ul class="overflow-auto">
+                <ul class="overflow-auto h-96">
                     {#if toPrepare > 0}
                         {#each allClassSpells.filter((s) => !prep.prepared.find((c) => s.name === c.name) && s.level !== 0 && s.level <= maxSlotLevel) as spell}
                             <Spell
@@ -142,9 +146,9 @@
             </div>
             <div><span>>></span></div>
             <div>
-                <h2>prepared spelluloids</h2>
+                <h2>Prepared spells</h2>
                 <hr />
-                <ul class="overflow-auto">
+                <ul class="overflow-auto h-96">
                     {#each prep.prepared as spell}
                         <Spell
                             {spell}
