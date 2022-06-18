@@ -7,10 +7,12 @@
     import { getLazy } from "./utils/lazy";
     import { getOptimism } from "./srd/optimism";
 
+    export let prep: prep;
+    export let save: (prep: prep) => void;
+
     let allClassSpells = [];
     let maxSlotLevel = 0;
     let toPrepare = 0;
-    export let prep: prep;
 
     const mod = (score: number) => Math.floor((score - 10) / 2);
     const refreshSpells = () =>
@@ -39,6 +41,7 @@
             (mod(prep.score) + prep.level) * caster - prep.prepared.length
         );
     };
+    const clearPrepared = () => ([prep.catnips, prep.prepared] = [[], []]);
     onMount(() => {
         refreshSpells();
         refreshMaxSlotLevel();
@@ -50,25 +53,41 @@
     <p class="p-1">
         A tool for the {getLazy()}
         <select
-            bind:value={prep.clazz}
-            on:change={() => {
+            on:change={(e) => {
+                prep.clazz = classes[e.currentTarget.value];
+                clearPrepared();
                 refreshSpells();
                 refreshMaxSlotLevel();
+                save(prep);
             }}
         >
             {#each Object.values(classes) as clazz}
-                <option value={clazz}>{clazz.name}</option>
+                {#if prep.clazz.name === clazz.name}
+                    <option value={clazz.name.toLowerCase()} selected
+                        >{clazz.name}</option
+                    >
+                {:else}
+                    <option value={clazz.name.toLowerCase()}
+                        >{clazz.name}</option
+                    >
+                {/if}
             {/each}
         </select>, who is level
         <input
-            on:change={() => refreshMaxSlotLevel()}
+            on:change={() => {
+                refreshMaxSlotLevel();
+                save(prep);
+            }}
             bind:value={prep.level}
             max="20"
             min="1"
             type="number"
         />, with a {prep.clazz.spellcastingAbility} score of
         <input
-            on:change={() => refreshMaxSlotLevel()}
+            on:change={() => {
+                refreshMaxSlotLevel();
+                save(prep);
+            }}
             bind:value={prep.score}
             max="20"
             min="1"
@@ -94,9 +113,10 @@
                         {#each allClassSpells.filter((s) => s.level === 0 && !prep.catnips.find((c) => s.name === c.name)) as catnip}
                             <Spell
                                 spell={catnip}
-                                click={() =>
-                                    (prep.catnips =
-                                        prep.catnips.concat(catnip))}
+                                click={() => {
+                                    prep.catnips = prep.catnips.concat(catnip);
+                                    save(prep);
+                                }}
                             />
                         {/each}
                     {:else}
@@ -112,10 +132,12 @@
                     {#each prep.catnips as catnip}
                         <Spell
                             spell={catnip}
-                            click={() =>
-                                (prep.catnips = prep.catnips.filter(
+                            click={() => {
+                                prep.catnips = prep.catnips.filter(
                                     (c) => c.name !== catnip.name
-                                ))}
+                                );
+                                save(prep);
+                            }}
                         />
                     {/each}
                 </ul>
@@ -136,6 +158,7 @@
                                 click={() => {
                                     prep.prepared = prep.prepared.concat(spell);
                                     calculatePrepared();
+                                    save(prep);
                                 }}
                             />
                         {/each}
@@ -157,6 +180,7 @@
                                     (p) => p.name !== spell.name
                                 );
                                 calculatePrepared();
+                                save(prep);
                             }}
                         />
                     {/each}

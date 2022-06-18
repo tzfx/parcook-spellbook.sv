@@ -4,7 +4,13 @@ import type { prep } from "../prep";
 
 export class CharacterStorage {
     get(id?: string): Promise<prep> {
-        return localforage.getItem<prep>(id ?? "last");
+        if (id == null) {
+            return localforage
+                .getItem<string>("last")
+                .then((id) => localforage.getItem<prep>(id));
+        } else {
+            return localforage.getItem<prep>(id);
+        }
     }
 
     set(prep: prep): Promise<prep> {

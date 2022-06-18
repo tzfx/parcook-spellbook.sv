@@ -9,7 +9,7 @@ export const artificer = {
     },
     proficiency: ["con", "int"],
     spellcastingAbility: "int",
-    casterProgression: "1/3",
+    casterProgression: "1/2",
     cantripProgression: [
         2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4,
     ],

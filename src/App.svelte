@@ -16,11 +16,12 @@
         }
         return prep;
     });
+    let save = (prep) => storage.set(prep);
 </script>
 
 <main>
     {#await load then prep}
-        <Spellbook {prep} />
+        <Spellbook {save} {prep} />
     {/await}
     <div>
         <a href="https://github.com/tzfx" class="footer" target="_blank"
