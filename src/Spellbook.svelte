@@ -94,98 +94,94 @@
             type="number"
         />.
     </p>
-    <p>
-        <button>load</button>
-        <button>save</button>
-    </p>
-    <div class="grid grid-rows-2">
-        <div class="grid grid-cols-3 border-t-2">
-            <div>
-                <h2>
-                    Choose {prep.clazz.cantripProgression != null
-                        ? prep.clazz.cantripProgression[prep.level + 1] -
-                          prep.catnips.length
-                        : 0} cantrips:
-                </h2>
-                <hr />
-                <ul class="overflow-auto h-48">
-                    {#if prep.clazz.cantripProgression !== null && prep.clazz.cantripProgression[prep.level + 1] - prep.catnips.length > 0}
-                        {#each allClassSpells.filter((s) => s.level === 0 && !prep.catnips.find((c) => s.name === c.name)) as catnip}
-                            <Spell
-                                spell={catnip}
-                                click={() => {
-                                    prep.catnips = prep.catnips.concat(catnip);
-                                    save(prep);
-                                }}
-                            />
-                        {/each}
-                    {:else}
-                        {getOptimism()}
-                    {/if}
-                </ul>
-            </div>
-            <div>>></div>
-            <div>
-                <h2>Chosen cantrips:</h2>
-                <hr />
-                <ul class="overflow-auto h-48">
-                    {#each prep.catnips as catnip}
+    <hr />
+    <div class="flex flex-row">
+        <div class="basis-2/5">
+            <h2>
+                Choose {prep.clazz.cantripProgression != null
+                    ? prep.clazz.cantripProgression[prep.level + 1] -
+                      prep.catnips.length
+                    : 0} cantrips:
+            </h2>
+            <hr />
+            <ul class="overflow-auto max-h-64">
+                {#if prep.clazz.cantripProgression !== null && prep.clazz.cantripProgression[prep.level + 1] - prep.catnips.length > 0}
+                    {#each allClassSpells.filter((s) => s.level === 0 && !prep.catnips.find((c) => s.name === c.name)) as catnip}
                         <Spell
                             spell={catnip}
                             click={() => {
-                                prep.catnips = prep.catnips.filter(
-                                    (c) => c.name !== catnip.name
-                                );
+                                prep.catnips = prep.catnips.concat(catnip);
                                 save(prep);
                             }}
                         />
                     {/each}
-                </ul>
-            </div>
+                {:else}
+                    {getOptimism()}
+                {/if}
+            </ul>
         </div>
-        <div class="grid grid-cols-3 border-t-2">
-            <div>
-                <h2>
-                    You have {toPrepare} spell{toPrepare === 1 ? "" : "s"}
-                    to prepare.
-                </h2>
-                <hr />
-                <ul class="overflow-auto h-96">
-                    {#if toPrepare > 0}
-                        {#each allClassSpells.filter((s) => !prep.prepared.find((c) => s.name === c.name) && s.level !== 0 && s.level <= maxSlotLevel) as spell}
-                            <Spell
-                                {spell}
-                                click={() => {
-                                    prep.prepared = prep.prepared.concat(spell);
-                                    calculatePrepared();
-                                    save(prep);
-                                }}
-                            />
-                        {/each}
-                    {:else}
-                        {getOptimism()}
-                    {/if}
-                </ul>
-            </div>
-            <div><span>>></span></div>
-            <div>
-                <h2>Prepared spells</h2>
-                <hr />
-                <ul class="overflow-auto h-96">
-                    {#each prep.prepared as spell}
+        <div class="basis-1/5" />
+        <div class="basis-2/5">
+            <h2>Chosen cantrips:</h2>
+            <hr />
+            <ul class="overflow-auto max-h-64">
+                {#each prep.catnips as catnip}
+                    <Spell
+                        spell={catnip}
+                        click={() => {
+                            prep.catnips = prep.catnips.filter(
+                                (c) => c.name !== catnip.name
+                            );
+                            save(prep);
+                        }}
+                    />
+                {/each}
+            </ul>
+        </div>
+    </div>
+    <br />
+    <div class="flex flex-row">
+        <div class="basis-2/5">
+            <h2>
+                You have {toPrepare} spell{toPrepare === 1 ? "" : "s"}
+                to prepare.
+            </h2>
+            <hr />
+            <ul class="overflow-auto max-h-96">
+                {#if toPrepare > 0}
+                    {#each allClassSpells.filter((s) => !prep.prepared.find((c) => s.name === c.name) && s.level !== 0 && s.level <= maxSlotLevel) as spell}
                         <Spell
                             {spell}
                             click={() => {
-                                prep.prepared = prep.prepared.filter(
-                                    (p) => p.name !== spell.name
-                                );
+                                prep.prepared = prep.prepared.concat(spell);
                                 calculatePrepared();
                                 save(prep);
                             }}
                         />
                     {/each}
-                </ul>
-            </div>
+                {:else}
+                    {getOptimism()}
+                {/if}
+            </ul>
+        </div>
+        <div class="basis-1/5"><i class="las la-3x la-exchange-alt" /></div>
+        <div class="basis-2/5">
+            <h2>Prepared spells</h2>
+            <hr />
+            <ul class="overflow-auto max-h-96">
+                {#each prep.prepared as spell}
+                    <Spell
+                        {spell}
+                        click={() => {
+                            prep.prepared = prep.prepared.filter(
+                                (p) => p.name !== spell.name
+                            );
+                            calculatePrepared();
+                            save(prep);
+                        }}
+                    />
+                {/each}
+            </ul>
         </div>
     </div>
 </div>
