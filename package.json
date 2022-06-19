@@ -34,7 +34,6 @@
     "dependencies": {
         "localforage": "^1.10.0",
         "sirv-cli": "^2.0.0",
-        "tw-elements": "^1.0.0-alpha12",
         "yaml": "^2.1.1"
     }
 }

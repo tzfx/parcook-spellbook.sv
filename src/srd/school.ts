@@ -1,4 +1,4 @@
-export const alpha2school = (alpha) => {
+export const alpha2school = (alpha: string) => {
     switch (alpha) {
         case "A":
             return "abjuration";
