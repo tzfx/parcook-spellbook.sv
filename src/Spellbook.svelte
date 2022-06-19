@@ -182,7 +182,9 @@
             <h2>Prepared spells</h2>
             <hr />
             <ul class="overflow-auto max-h-96">
-                {#each prep.prepared as spell}
+                {#each prep.prepared
+                    .sort((a, b) => (a.name < b.name ? -1 : 1))
+                    .sort((a, b) => (a.level < b.level ? -1 : 1)) as spell}
                     <Spell
                         on:message={selectedSpell$}
                         {spell}
@@ -203,8 +205,11 @@
         {#if selectedSpell != null}
             <SpellDetails spell={selectedSpell} />
         {:else}
-            <p class="text-center text-gray-500">
-                <em>Select a spell from above to view details.</em>
+            <p class="text-center text-gray-500 pt-28">
+                <em
+                    >Select the <i class="las la-search" /> icon from a spell above
+                    to view details.</em
+                >
             </p>
         {/if}
     </div>
