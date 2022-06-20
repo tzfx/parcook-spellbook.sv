@@ -57,8 +57,10 @@
 </script>
 
 <div class="h-screen">
-    <h1>Parcook-spellbook.sv</h1>
-    <p class="p-1">
+    <h1 class="text-orange-500 uppercase text-xl font-light my-5">
+        Parcook-spellbook.sv
+    </h1>
+    <p class="p-1 text-gray-700 font-light my-2">
         A tool for the {getLazy()}
         <select
             on:change={(e) => {
@@ -150,7 +152,7 @@
         </div>
         <br />
     {/if}
-    <div class="flex flex-row">
+    <div class="flex md:flex-row flex-col">
         <div class="basis-2/5">
             <h2>
                 You have {toPrepare} spell{toPrepare === 1 ? "" : "s"}
@@ -176,7 +178,7 @@
             </ul>
         </div>
         <div class="basis-1/5 my-auto">
-            <i class="las la-3x la-exchange-alt" />
+            <i class="las la-3x la-exchange-alt p-5 rotate-90 md:rotate-0" />
         </div>
         <div class="basis-2/5">
             <h2>Prepared spells</h2>
@@ -201,11 +203,11 @@
         </div>
     </div>
     <hr />
-    <div class="pt-3 w-6/12 mx-auto">
+    <div class="py-3 md:w-6/12 mx-auto">
         {#if selectedSpell != null}
             <SpellDetails spell={selectedSpell} />
         {:else}
-            <p class="text-center text-gray-500 pt-28">
+            <p class="text-center text-gray-500 py-28">
                 <em
                     >Select the <i class="las la-search" /> icon from a spell above
                     to view details.</em
@@ -219,12 +221,5 @@
     ul {
         list-style-type: none;
         width: 100%;
-    }
-
-    h1 {
-        color: #ff3e00;
-        text-transform: uppercase;
-        font-size: 2em;
-        font-weight: 100;
     }
 </style>

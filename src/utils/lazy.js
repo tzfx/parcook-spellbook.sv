@@ -47,4 +47,7 @@ const lazy = [
     "unready",
 ];
 
-export const getLazy = () => lazy[Math.floor(Math.random() * lazy.length)];
+export const getLazy = () =>
+    Math.random() > 0.33
+        ? "lazy"
+        : lazy[Math.floor(Math.random() * lazy.length)];

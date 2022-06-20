@@ -19,34 +19,15 @@
     let save = (prep) => storage.set(prep);
 </script>
 
-<main>
+<main class="md:max-w-5xl text-center p-4 mx-auto">
+    <div>
+        <a
+            href="https://github.com/tzfx"
+            class="text-xs right-4 top-2 absolute"
+            target="_blank">made with 🧙 by tzfx</a
+        >
+    </div>
     {#await load then prep}
         <Spellbook {save} {prep} />
     {/await}
-    <div>
-        <a href="https://github.com/tzfx" class="footer" target="_blank"
-            >made with 🧙 by tzfx</a
-        >
-    </div>
 </main>
-
-<style>
-    main {
-        text-align: center;
-        padding: 1em;
-        max-width: 240px;
-        margin: 0 auto;
-    }
-    .footer {
-        position: absolute;
-        right: 5em;
-        bottom: 1em;
-        color: #ff3e00;
-    }
-
-    @media (min-width: 640px) {
-        main {
-            max-width: 1000px;
-        }
-    }
-</style>
