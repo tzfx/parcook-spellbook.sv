@@ -19,8 +19,8 @@
         </p>
         <p>
             <strong>Range:</strong>
-            {spell.range.distance.amount ?? ""}
-            {spell.range.distance.type}
+            {spell.range?.distance?.amount ?? ""}
+            {spell.range?.distance?.type}
         </p>
         <p>
             <strong>Components:</strong>
@@ -45,15 +45,54 @@
     </div>
     <hr class="my-2" />
     <div>
+        <!-- @todo: refactor into entries component -->
+        <!-- to allow for multiple types (list, table, etc.) -->
         {#each spell.entries as entry}
-            <p>{entry}</p>
+            {#if entry.type == null}
+                <!-- entry is a simple string -->
+                <p>{entry}</p>
+            {:else if entry.type === "entries"}
+                <p><strong><em>{entry.name}</em></strong> {entry.entries}</p>
+            {:else if entry.type === "table"}
+                <div class="py-2">
+                    <table>
+                        <caption>{entry.caption}</caption>
+                        <tr>
+                            {#each entry.colLabels as col}
+                                <th>{col}</th>
+                            {/each}
+                        </tr>
+                        {#each entry.rows as row}
+                            <tr>
+                                {#each row as col}
+                                    <td>
+                                        {col}
+                                    </td>
+                                {/each}
+                            </tr>
+                        {/each}
+                    </table>
+                </div>
+            {:else if entry.type === "list"}
+                <div class="py-2">
+                    <ul>
+                        {#each entry.items as item}
+                            <li>{item}</li>
+                        {/each}
+                    </ul>
+                </div>
+            {/if}
         {/each}
         {#if spell.entriesHigherLevel != null}
             <br />
             <strong><em>At Higher Levels:</em></strong>
             {#each spell.entriesHigherLevel as ehl}
                 {#each ehl.entries as entry}
-                    <p>{entry}</p>
+                    {#if entry.entries == null}
+                        <p>{entry}</p>
+                    {:else}
+                        <p>{entry.entries}</p>
+                    {/if}
                 {/each}
             {/each}
         {/if}
