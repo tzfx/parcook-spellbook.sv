@@ -3,7 +3,7 @@
     import type { prep } from "./prep";
     import Spell from "./Spell.svelte";
     import { classes } from "./srd/classes";
-    import { spells } from "./srd/spells-phb";
+    import { spells } from "./srd/spells/spells";
     import { getLazy } from "./utils/lazy";
     import { getOptimism } from "./srd/optimism";
     import SpellDetails from "./SpellDetails.svelte";
@@ -24,16 +24,15 @@
 
     const mod = (score: number) => Math.floor((score - 10) / 2);
     const refreshSpells = () =>
-        (allClassSpells = spells
-            .filter(
-                (spell) =>
-                    spell.classes.fromClassList.find(
-                        (i) =>
-                            i.name.toLowerCase() ===
-                            prep.clazz.name.toLowerCase()
-                    ) && !prep.prepared.includes(spell)
-            )
-            .sort((a, b) => (a.level < b.level ? -1 : +1)));
+        (allClassSpells = spells.filter(
+            (spell) =>
+                spell.classes.fromClassList?.find(
+                    (i) =>
+                        i.name.toLowerCase() ===
+                            prep.clazz.name.toLowerCase() &&
+                        i.source === prep.clazz.source
+                ) && !prep.prepared.includes(spell)
+        ));
     const refreshMaxSlotLevel = () => {
         maxSlotLevel = prep.clazz.classTableGroups
             .find((group) => group.rowsSpellProgression != null)
