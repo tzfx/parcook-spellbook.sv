@@ -9,7 +9,7 @@
     import SpellDetails from "./SpellDetails.svelte";
 
     export let prep: prep;
-    export let save: (prep: prep) => void;
+    export let save: (prep: prep) => Promise<prep>;
 
     const showCantrips = false;
 
@@ -55,12 +55,10 @@
     });
 </script>
 
-<div class="h-screen">
-    <h1 class="text-orange-500 uppercase text-xl font-light my-5">
-        Parcook-spellbook.sv
-    </h1>
-    <p class="p-1 text-gray-700 font-light my-2">
-        A tool for the {getLazy()}
+<div>
+    <p class="p-1 text-gray-700 font-light mt-2">
+        A tool for
+        <input type="text" class="w-32" bind:value={prep.name} />, the {getLazy()}
         <select
             on:change={(e) => {
                 prep.clazz = classes[e.currentTarget.value];
