@@ -33,6 +33,12 @@ export class CharacterStorage {
         return localforage.setItem(name, prep);
     }
 
+    async delete(id: string) {
+        await localforage.removeItem(id);
+        this.idlist = this.idlist.filter((i) => i !== id);
+        return localforage.setItem("idlist", this.idlist);
+    }
+
     export(character: prep) {
         throw Error("Export not yet implemented.");
     }
