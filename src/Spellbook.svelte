@@ -49,25 +49,28 @@
         );
     };
     const clearPrepared = () => ([prep.catnips, prep.prepared] = [[], []]);
+
+    const trySave = () => {
+        if (![null, ""].includes(prep.name)) save(prep);
+    };
+
     onMount(() => {
         refreshSpells();
         refreshMaxSlotLevel();
     });
 </script>
 
-<div class="h-screen">
-    <h1 class="text-orange-500 uppercase text-xl font-light my-5">
-        Parcook-spellbook.sv
-    </h1>
-    <p class="p-1 text-gray-700 font-light my-2">
-        A tool for the {getLazy()}
+<div>
+    <p class="p-1 text-gray-700 font-light mt-2">
+        A tool for
+        <input type="text" class="w-32" bind:value={prep.name} />, the {getLazy()}
         <select
             on:change={(e) => {
                 prep.clazz = classes[e.currentTarget.value];
                 clearPrepared();
                 refreshSpells();
                 refreshMaxSlotLevel();
-                save(prep);
+                trySave();
             }}
         >
             {#each Object.values(classes) as clazz}
@@ -85,7 +88,7 @@
         <input
             on:change={() => {
                 refreshMaxSlotLevel();
-                save(prep);
+                trySave();
             }}
             bind:value={prep.level}
             max="20"
@@ -95,7 +98,7 @@
         <input
             on:change={() => {
                 refreshMaxSlotLevel();
-                save(prep);
+                trySave();
             }}
             bind:value={prep.score}
             max="20"
@@ -121,7 +124,7 @@
                                 spell={catnip}
                                 click={() => {
                                     prep.catnips = prep.catnips.concat(catnip);
-                                    save(prep);
+                                    trySave();
                                 }}
                             />
                         {/each}
@@ -142,7 +145,7 @@
                                 prep.catnips = prep.catnips.filter(
                                     (c) => c.name !== catnip.name
                                 );
-                                save(prep);
+                                trySave();
                             }}
                         />
                     {/each}
@@ -167,7 +170,7 @@
                             click={() => {
                                 prep.prepared = prep.prepared.concat(spell);
                                 calculatePrepared();
-                                save(prep);
+                                trySave();
                             }}
                         />
                     {/each}
@@ -194,7 +197,7 @@
                                 (p) => p.name !== spell.name
                             );
                             calculatePrepared();
-                            save(prep);
+                            trySave();
                         }}
                     />
                 {/each}

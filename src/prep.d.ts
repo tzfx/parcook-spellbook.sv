@@ -1,8 +1,8 @@
 export interface prep {
-    id?: string;
+    catnips: any[];
     clazz: any;
     level: number;
-    score: number;
+    name?: string;
     prepared: any[];
-    catnips: any[];
+    score: number;
 }
