@@ -5,11 +5,15 @@
     import Spellbook from "./Spellbook.svelte";
 
     const storage: CharacterStorage = new CharacterStorage();
-    let idlist: string[];
+    let idlist: string[] = [];
 
     const init = async () => {
         idlist = await storage.list(true);
-        let prep = await storage.get();
+        return await load();
+    };
+
+    const load = async (id?: string) => {
+        let prep = await storage.get(id);
         if (prep == null) {
             prep = {
                 clazz: randomClass(),
@@ -23,7 +27,13 @@
         return prep;
     };
 
-    const save = (prep: prep) => storage.set(prep);
+    const save = async (prep: prep) => {
+        await storage.set(prep);
+        idlist = await storage.list(true);
+    };
+
+    let loading = init();
+    let showSelect = false;
 </script>
 
 <main class="md:max-w-5xl text-center p-4 mx-auto h-screen">
@@ -37,17 +47,32 @@
     <h1 class="text-orange-500 uppercase text-xl font-light my-5">
         Parcook-spellbook.sv
     </h1>
-    <p class="text-sm mb-2 text-slate-500">
-        other saved characters
-        {#await init() then prep}
-            <select default={false}>
+    <div class="flex flex-row-reverse">
+        <p
+            class="w-fit h-min p-2 text-sm mb-2 text-slate-500 border-2 cursor-pointer"
+            on:click={() => (showSelect = !showSelect)}
+        >
+            <i
+                class={`las la-chevron-circle-${
+                    !showSelect ? "left" : "right"
+                }`}
+            />
+            saved characters ({idlist.length})
+        </p>
+        {#await loading then _}
+            {#if showSelect}
                 {#each idlist as id}
-                    <option>{id}</option>
+                    <p
+                        class="w-fit mr-2 h-min p-2 text-sm mb-2 text-slate-500 border-2 cursor-pointer"
+                        on:click={() => (loading = load(id))}
+                    >
+                        {id}
+                    </p>
                 {/each}
-            </select>
+            {/if}
         {/await}
-    </p>
-    {#await init() then prep}
+    </div>
+    {#await loading then prep}
         <Spellbook {save} {prep} />
     {/await}
 </main>

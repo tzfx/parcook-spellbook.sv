@@ -9,7 +9,7 @@
     import SpellDetails from "./SpellDetails.svelte";
 
     export let prep: prep;
-    export let save: (prep: prep) => Promise<prep>;
+    export let save: (prep: prep) => void;
 
     const showCantrips = false;
 
@@ -49,6 +49,11 @@
         );
     };
     const clearPrepared = () => ([prep.catnips, prep.prepared] = [[], []]);
+
+    const trySave = () => {
+        if (![null, ""].includes(prep.name)) save(prep);
+    };
+
     onMount(() => {
         refreshSpells();
         refreshMaxSlotLevel();
@@ -65,7 +70,7 @@
                 clearPrepared();
                 refreshSpells();
                 refreshMaxSlotLevel();
-                save(prep);
+                trySave();
             }}
         >
             {#each Object.values(classes) as clazz}
@@ -83,7 +88,7 @@
         <input
             on:change={() => {
                 refreshMaxSlotLevel();
-                save(prep);
+                trySave();
             }}
             bind:value={prep.level}
             max="20"
@@ -93,7 +98,7 @@
         <input
             on:change={() => {
                 refreshMaxSlotLevel();
-                save(prep);
+                trySave();
             }}
             bind:value={prep.score}
             max="20"
@@ -119,7 +124,7 @@
                                 spell={catnip}
                                 click={() => {
                                     prep.catnips = prep.catnips.concat(catnip);
-                                    save(prep);
+                                    trySave();
                                 }}
                             />
                         {/each}
@@ -140,7 +145,7 @@
                                 prep.catnips = prep.catnips.filter(
                                     (c) => c.name !== catnip.name
                                 );
-                                save(prep);
+                                trySave();
                             }}
                         />
                     {/each}
@@ -165,7 +170,7 @@
                             click={() => {
                                 prep.prepared = prep.prepared.concat(spell);
                                 calculatePrepared();
-                                save(prep);
+                                trySave();
                             }}
                         />
                     {/each}
@@ -192,7 +197,7 @@
                                 (p) => p.name !== spell.name
                             );
                             calculatePrepared();
-                            save(prep);
+                            trySave();
                         }}
                     />
                 {/each}

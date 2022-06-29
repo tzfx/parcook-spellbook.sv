@@ -25,7 +25,7 @@ export class CharacterStorage {
 
     set(prep: prep): Promise<prep> {
         const { name } = prep;
-        if (this.idlist.length === 0) {
+        if (!this.idlist.includes(name)) {
             this.idlist.push(name);
             localforage.setItem("idlist", this.idlist);
         }
