@@ -12,6 +12,8 @@
     export let save: (prep: prep) => void;
 
     const showCantrips = false;
+    let showOtherSpells = true;
+    let showOtherSpellsSelection = true;
 
     let allClassSpells: any[] = [];
     let maxSlotLevel = 0;
@@ -204,6 +206,54 @@
             </ul>
         </div>
     </div>
+    <hr />
+    {#if showOtherSpells}
+        <div class="flex md:flex-row flex-col pt-2">
+            <div class="basis-2/5" hidden={!showOtherSpellsSelection}>
+                <h2>Other Spell Selection</h2>
+                <ul class="overflow-auto max-h-96">
+                    {#each spells.filter((s) => !prep.other.find((c) => s.name === c.name) && s.level !== 0 && s.level <= maxSlotLevel) as spell}
+                        <Spell
+                            on:message={selectedSpell$}
+                            {spell}
+                            click={() => {
+                                prep.other = prep.other.concat(spell);
+                                trySave();
+                            }}
+                        />
+                    {/each}
+                </ul>
+            </div>
+            <div class={showOtherSpellsSelection ? "basis-1/5" : "basis-3/5"}>
+                <p
+                    class="w-fit mx-auto h-min p-2 text-sm mb-2 text-slate-500 border-2 cursor-pointer"
+                    on:click={() =>
+                        (showOtherSpellsSelection = !showOtherSpellsSelection)}
+                >
+                    {showOtherSpellsSelection ? "hide" : "show"} selection
+                </p>
+            </div>
+            <div class="basis-2/5">
+                <h2>Other Spells Known</h2>
+                <ul class="overflow-auto max-h-96">
+                    {#each prep.other
+                        .sort((a, b) => (a.name < b.name ? -1 : 1))
+                        .sort((a, b) => (a.level < b.level ? -1 : 1)) as spell}
+                        <Spell
+                            on:message={selectedSpell$}
+                            {spell}
+                            click={() => {
+                                prep.other = prep.other.filter(
+                                    (p) => p.name !== spell.name
+                                );
+                                trySave();
+                            }}
+                        />
+                    {/each}
+                </ul>
+            </div>
+        </div>
+    {/if}
     <hr />
     <div class="py-3 md:w-6/12 mx-auto">
         {#if selectedSpell != null}

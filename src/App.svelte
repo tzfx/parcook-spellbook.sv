@@ -23,6 +23,7 @@
                 score: 10,
                 catnips: [],
                 prepared: [],
+                other: [],
             };
         }
         return prep;

@@ -3,6 +3,7 @@ export interface prep {
     clazz: any;
     level: number;
     name?: string;
+    other: any[];
     prepared: any[];
     score: number;
 }
