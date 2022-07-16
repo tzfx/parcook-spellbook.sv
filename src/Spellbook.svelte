@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { onMount } from "svelte";
+    import { afterUpdate, onMount } from "svelte";
     import type { prep } from "./prep";
     import Spell from "./Spell.svelte";
     import { classes } from "./srd/classes";
@@ -7,9 +7,11 @@
     import { getLazy } from "./utils/lazy";
     import { getOptimism } from "./srd/optimism";
     import SpellDetails from "./SpellDetails.svelte";
+    import { randomName } from "./srd/names/names";
 
     export let prep: prep;
     export let save: (prep: prep) => void;
+    export let srd: boolean;
 
     const showCantrips = false;
     let showOtherSpells = true;
@@ -28,12 +30,14 @@
     const refreshSpells = () =>
         (allClassSpells = spells.filter(
             (spell) =>
+                (srd ? spell.srd : true) &&
                 spell.classes.fromClassList?.find(
                     (i) =>
                         i.name.toLowerCase() ===
                             prep.clazz.name.toLowerCase() &&
                         i.source === prep.clazz.source
-                ) && !prep.prepared.includes(spell)
+                ) &&
+                !prep.prepared.includes(spell)
         ));
     const refreshMaxSlotLevel = () => {
         maxSlotLevel = prep.clazz.classTableGroups
@@ -52,6 +56,8 @@
     };
     const clearPrepared = () => ([prep.catnips, prep.prepared] = [[], []]);
 
+    const deselect = () => (selectedSpell = null);
+
     const trySave = () => {
         if (![null, ""].includes(prep.name)) save(prep);
     };
@@ -60,12 +66,21 @@
         refreshSpells();
         refreshMaxSlotLevel();
     });
+
+    afterUpdate(() => {
+        refreshSpells();
+    });
 </script>
 
 <div>
     <p class="p-1 text-gray-700 font-light mt-2">
         A tool for
-        <input type="text" class="w-32" bind:value={prep.name} />, the {getLazy()}
+        <input
+            type="text"
+            placeholder={randomName()}
+            class="w-32"
+            bind:value={prep.name}
+        />, the {getLazy()}
         <select
             on:change={(e) => {
                 prep.clazz = classes[e.currentTarget.value];
@@ -212,7 +227,7 @@
             <div class="basis-2/5" hidden={!showOtherSpellsSelection}>
                 <h2>Other Spell Selection</h2>
                 <ul class="overflow-auto max-h-96">
-                    {#each spells.filter((s) => !prep.other.find((c) => s.name === c.name) && s.level !== 0 && s.level <= maxSlotLevel) as spell}
+                    {#each spells.filter((s) => (srd ? s.srd : true) && !prep.other.find((c) => s.name === c.name) && s.level !== 0 && s.level <= maxSlotLevel) as spell}
                         <Spell
                             on:message={selectedSpell$}
                             {spell}
@@ -257,7 +272,7 @@
     <hr />
     <div class="py-3 md:w-6/12 mx-auto">
         {#if selectedSpell != null}
-            <SpellDetails spell={selectedSpell} />
+            <SpellDetails {deselect} spell={selectedSpell} />
         {:else}
             <p class="text-center text-gray-500 py-28">
                 <em

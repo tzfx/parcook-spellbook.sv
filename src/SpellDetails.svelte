@@ -4,11 +4,15 @@
     import type { SRDSpell } from "./srd/SRDSpell";
 
     export let spell: SRDSpell;
+    export let deselect: () => void = () => {};
 </script>
 
 <div class="text-left border-2 p-2">
     <h1 class="text-xl">
         <strong>{spell.name}</strong>
+        <div class="float-right cursor-pointer" on:click={() => deselect()}>
+            <i class="las la-times" />
+        </div>
     </h1>
     <div>
         <em>Level {spell.level} - {alpha2school(spell.school)}</em>
