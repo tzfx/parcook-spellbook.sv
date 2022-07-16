@@ -3,13 +3,13 @@
     import { CharacterStorage } from "./utils/storage";
     import type { prep } from "./prep";
     import Spellbook from "./Spellbook.svelte";
-    import Spell from "./Spell.svelte";
 
     const storage: CharacterStorage = new CharacterStorage();
     let idlist: string[] = [];
 
     const init = async () => {
         idlist = await storage.list(true);
+        srd = await storage.getSRD();
         return await load();
     };
 
@@ -23,6 +23,7 @@
                 score: 10,
                 catnips: [],
                 prepared: [],
+                other: [],
             };
         }
         return prep;
@@ -35,8 +36,14 @@
 
     const remove = (id: string) => storage.delete(id);
 
+    const toggleSrd = () => {
+        srd = !srd;
+        storage.setSRD(srd);
+    };
+
     let loading = init();
     let showSelect = false;
+    let srd = true;
 </script>
 
 <main class="md:max-w-5xl text-center p-4 mx-auto h-screen">
@@ -47,7 +54,10 @@
             target="_blank">made with 🧙 by tzfx</a
         >
     </div>
-    <h1 class="text-orange-500 uppercase text-xl font-light my-5">
+    <h1
+        class="text-orange-500 cursor-default uppercase text-xl font-light my-5"
+    >
+        <span on:click={toggleSrd}>{srd ? "📕" : "📚"}</span>
         Parcook-spellbook.sv
     </h1>
     <div class="flex flex-row-reverse">
@@ -85,6 +95,6 @@
         {/await}
     </div>
     {#await loading then prep}
-        <Spellbook {save} {prep} />
+        <Spellbook {save} {srd} {prep} />
     {/await}
 </main>

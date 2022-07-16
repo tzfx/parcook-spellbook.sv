@@ -33,6 +33,14 @@ export class CharacterStorage {
         return localforage.setItem(name, prep);
     }
 
+    setSRD(srd: boolean): Promise<boolean> {
+        return localforage.setItem("srd", srd);
+    }
+
+    getSRD(): Promise<boolean> {
+        return localforage.getItem("srd").then((v: boolean) => v ?? true);
+    }
+
     async delete(id: string) {
         await localforage.removeItem(id);
         this.idlist = this.idlist.filter((i) => i !== id);

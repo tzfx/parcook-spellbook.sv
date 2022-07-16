@@ -4,7 +4,7 @@
     import type { SRDSpell } from "./srd/SRDSpell";
     import SpellDetails from "./SpellDetails.svelte";
     import { createEventDispatcher } from "svelte";
-    export let spell: SRDSpell;
+    export let spell: any;
     export let click: () => void = () => {};
     let showInfo = false;
     const emitter = createEventDispatcher();
