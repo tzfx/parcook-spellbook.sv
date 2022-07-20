@@ -3,6 +3,8 @@ export const convert = (num: number) => {
         throw Error("Not supported.");
     }
     switch (num) {
+        case 0:
+            return "Ø";
         case 1:
             return "I";
         case 2:

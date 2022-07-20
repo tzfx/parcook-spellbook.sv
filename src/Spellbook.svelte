@@ -5,6 +5,7 @@
     import { classes } from "./srd/classes";
     import { spells } from "./srd/spells/spells";
     import { getLazy } from "./utils/lazy";
+    import { convert } from "./utils/numerals";
     import { getOptimism } from "./srd/optimism";
     import SpellDetails from "./SpellDetails.svelte";
     import { randomName } from "./srd/names/names";
@@ -21,6 +22,8 @@
     let maxSlotLevel = 0;
     let toPrepare = 0;
     let selectedSpell;
+
+    let levelfilter;
 
     const selectedSpell$ = (e) => {
         selectedSpell = e.detail;
@@ -50,9 +53,10 @@
         if (prep.clazz.casterProgression === "1/2") {
             caster = 0.5;
         }
-        toPrepare = Math.floor(
-            (mod(prep.score) + prep.level) * caster - prep.prepared.length
-        );
+        toPrepare =
+            mod(prep.score) +
+            Math.floor(prep.level * caster) -
+            prep.prepared.length;
     };
     const clearPrepared = () => ([prep.catnips, prep.prepared] = [[], []]);
 
@@ -226,8 +230,23 @@
         <div class="flex md:flex-row flex-col pt-2">
             <div class="basis-2/5" hidden={!showOtherSpellsSelection}>
                 <h2>Other Spell Selection</h2>
+                <div class="flex flex-row justify-center py-2">
+                    {#each new Array(maxSlotLevel + 1)
+                        .fill(1)
+                        .map((_, i) => i) as lvl}
+                        <div
+                            class="cursor-pointer w-4 border-2 {lvl ===
+                                levelfilter && 'bg-blue-300'}"
+                            on:click={() =>
+                                (levelfilter =
+                                    lvl === levelfilter ? undefined : lvl)}
+                        >
+                            {convert(lvl)}
+                        </div>
+                    {/each}
+                </div>
                 <ul class="overflow-auto max-h-96">
-                    {#each spells.filter((s) => (srd ? s.srd : true) && !prep.other.find((c) => s.name === c.name) && s.level !== 0 && s.level <= maxSlotLevel) as spell}
+                    {#each spells.filter((s) => (srd ? s.srd : true) && !prep.other.find((c) => s.name === c.name) && s.level <= maxSlotLevel && (levelfilter != null ? s.level === levelfilter : true)) as spell}
                         <Spell
                             on:message={selectedSpell$}
                             {spell}
