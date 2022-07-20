@@ -2,6 +2,7 @@ import * as localforage from "localforage";
 
 import type { prep } from "../prep";
 
+localforage.config({ name: "parcook-spellbook.sv#1.0.0" });
 export class CharacterStorage {
     private idlist: string[] = [];
 
