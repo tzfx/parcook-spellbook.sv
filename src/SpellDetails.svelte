@@ -39,6 +39,9 @@
         </p>
         <p>
             <strong>Duration:</strong>
+            {#if spell.duration[0].concentration}
+                Concentration, up to
+            {/if}
             {#if spell.duration[0].type == "timed"}
                 {spell.duration[0].duration.amount}
                 {spell.duration[0].duration.type}
