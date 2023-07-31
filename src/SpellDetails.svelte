@@ -15,7 +15,7 @@
         </div>
     </h1>
     <div>
-        <em>Level {spell.level} - {alpha2school(spell.school)}</em>
+        <em>Level {spell.level} - {alpha2school(spell.school)}{spell.meta?.ritual ? " (ritual)": ""}</em>
         <p>
             <strong>Casting Time:</strong>
             {spell.time[0].number}

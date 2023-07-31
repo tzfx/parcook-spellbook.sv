@@ -13,6 +13,9 @@
 
 <li class="spell p-0">
   <button class={alpha2school(spell.school)} on:click={click}>
+    {#if spell.meta?.ritual}
+      <i class="las la-share-alt" />
+    {/if}
     {#if spell.duration[0].concentration}
       <i class="las la-eye" />
     {/if}
