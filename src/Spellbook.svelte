@@ -292,11 +292,11 @@
     <hr />
     <div class="flex">
         {#if prep.clazz != null}
-            <div class="py-3 md:w-6/12 mx-auto">
+            <div class="py-3 md:w-4/12 mx-auto">
                 <SpellSlots level={prep.level} clazz={prep.clazz} />
             </div>
         {/if}
-        <div class="py-3 md:w-6/12 mx-auto">
+        <div class="py-3 md:w-7/12 mx-auto">
             {#if selectedSpell != null}
                 <SpellDetails {deselect} spell={selectedSpell} />
             {:else}
