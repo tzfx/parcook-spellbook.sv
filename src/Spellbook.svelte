@@ -47,6 +47,7 @@
         maxSlotLevel = prep.clazz.classTableGroups
             .find((group) => group.rowsSpellProgression != null)
             ?.rowsSpellProgression[prep.level - 1].findIndex((n) => n === 0);
+        maxSlotLevel = maxSlotLevel === -1 ? 9 : maxSlotLevel; // Only goes up to 9.
         calculatePrepared();
     };
     const calculatePrepared = () => {
@@ -198,6 +199,11 @@
                     {/each}
                 {:else}
                     {getOptimism()}
+                    {#if prep.clazz != null}
+                    <div class="flex py-3 md:w-4/12 mx-auto">
+                        <SpellSlots level={prep.level} clazz={prep.clazz} />
+                    </div>
+                    {/if}
                 {/if}
             </ul>
         </div>
@@ -232,11 +238,11 @@
             <div class="basis-2/5" hidden={!showOtherSpellsSelection}>
                 <h2>Other Spell Selection</h2>
                 <div class="flex flex-row justify-center py-2">
-                    {#each new Array(maxSlotLevel + 1)
+                    {#each new Array(10)
                         .fill(1)
                         .map((_, i) => i) as lvl}
                         <div
-                            class="cursor-pointer w-4 border-2 {lvl ===
+                            class="cursor-pointer border-2 ml-1 {lvl ===
                                 levelfilter && 'bg-blue-300'}"
                             on:click={() =>
                                 (levelfilter =
@@ -247,7 +253,7 @@
                     {/each}
                 </div>
                 <ul class="overflow-auto max-h-96">
-                    {#each spells.filter((s) => (srd ? s.srd : true) && !prep.other.find((c) => s.name === c.name) && s.level <= maxSlotLevel && (levelfilter != null ? s.level === levelfilter : true)) as spell}
+                    {#each spells.filter((s) => (srd ? s.srd : true) && !prep.other.find((c) => s.name === c.name) && (levelfilter != null ? s.level === levelfilter : true)) as spell}
                         <Spell
                             on:message={selectedSpell$}
                             {spell}
@@ -291,12 +297,7 @@
     {/if}
     <hr />
     <div class="flex">
-        {#if prep.clazz != null}
-            <div class="py-3 md:w-4/12 mx-auto">
-                <SpellSlots level={prep.level} clazz={prep.clazz} />
-            </div>
-        {/if}
-        <div class="py-3 md:w-7/12 mx-auto">
+        <div class="py-3 md:w-3/4 mx-auto">
             {#if selectedSpell != null}
                 <SpellDetails {deselect} spell={selectedSpell} />
             {:else}
