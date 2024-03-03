@@ -39,9 +39,9 @@
                     (i) =>
                         i.name.toLowerCase() ===
                             prep.clazz.name.toLowerCase() &&
-                        i.source === prep.clazz.source
+                        i.source === prep.clazz.source,
                 ) &&
-                !prep.prepared.includes(spell)
+                !prep.prepared.includes(spell),
         ));
     const refreshMaxSlotLevel = () => {
         maxSlotLevel = prep.clazz.classTableGroups
@@ -79,7 +79,7 @@
 </script>
 
 <div>
-    <p class="p-1 text-gray-700 font-light mt-2">
+    <p class="mt-2 p-1 font-light text-gray-700">
         A tool for
         <input
             type="text"
@@ -130,6 +130,11 @@
         />.
     </p>
     <hr />
+    {#if prep.clazz != null}
+        <div class="mx-auto py-3">
+            <SpellSlots level={prep.level} clazz={prep.clazz} />
+        </div>
+    {/if}
     {#if showCantrips}
         <div class="flex flex-row">
             <div class="basis-2/5">
@@ -140,7 +145,7 @@
                         : 0} cantrips:
                 </h2>
                 <hr />
-                <ul class="overflow-auto max-h-64">
+                <ul class="max-h-64 overflow-auto">
                     {#if prep.clazz.cantripProgression !== null && prep.clazz.cantripProgression[prep.level + 1] - prep.catnips.length > 0}
                         {#each allClassSpells.filter((s) => s.level === 0 && !prep.catnips.find((c) => s.name === c.name)) as catnip}
                             <Spell
@@ -160,13 +165,13 @@
             <div class="basis-2/5">
                 <h2>Chosen cantrips:</h2>
                 <hr />
-                <ul class="overflow-auto max-h-64">
+                <ul class="max-h-64 overflow-auto">
                     {#each prep.catnips as catnip}
                         <Spell
                             spell={catnip}
                             click={() => {
                                 prep.catnips = prep.catnips.filter(
-                                    (c) => c.name !== catnip.name
+                                    (c) => c.name !== catnip.name,
                                 );
                                 trySave();
                             }}
@@ -177,14 +182,14 @@
         </div>
         <br />
     {/if}
-    <div class="flex md:flex-row flex-col">
+    <div class="flex flex-col md:flex-row">
         <div class="basis-2/5">
             <h2>
                 You have {toPrepare} spell{toPrepare === 1 ? "" : "s"}
                 to prepare.
             </h2>
             <hr />
-            <ul class="overflow-auto max-h-96">
+            <ul class="max-h-96 overflow-auto">
                 {#if toPrepare > 0}
                     {#each allClassSpells.filter((s) => !prep.prepared.find((c) => s.name === c.name) && s.level !== 0 && s.level <= maxSlotLevel) as spell}
                         <Spell
@@ -199,21 +204,16 @@
                     {/each}
                 {:else}
                     {getOptimism()}
-                    {#if prep.clazz != null}
-                    <div class="flex py-3 md:w-4/12 mx-auto">
-                        <SpellSlots level={prep.level} clazz={prep.clazz} />
-                    </div>
-                    {/if}
                 {/if}
             </ul>
         </div>
-        <div class="basis-1/5 my-auto">
-            <i class="las la-3x la-exchange-alt p-5 rotate-90 md:rotate-0" />
+        <div class="my-auto basis-1/5">
+            <i class="las la-3x la-exchange-alt rotate-90 p-5 md:rotate-0" />
         </div>
         <div class="basis-2/5">
             <h2>Prepared spells</h2>
             <hr />
-            <ul class="overflow-auto max-h-96">
+            <ul class="max-h-96 overflow-auto">
                 {#each prep.prepared
                     .sort((a, b) => (a.name < b.name ? -1 : 1))
                     .sort((a, b) => (a.level < b.level ? -1 : 1)) as spell}
@@ -222,7 +222,7 @@
                         {spell}
                         click={() => {
                             prep.prepared = prep.prepared.filter(
-                                (p) => p.name !== spell.name
+                                (p) => p.name !== spell.name,
                             );
                             calculatePrepared();
                             trySave();
@@ -234,15 +234,13 @@
     </div>
     <hr />
     {#if showOtherSpells}
-        <div class="flex md:flex-row flex-col pt-2">
+        <div class="flex flex-col pt-2 md:flex-row">
             <div class="basis-2/5" hidden={!showOtherSpellsSelection}>
                 <h2>Other Spell Selection</h2>
                 <div class="flex flex-row justify-center py-2">
-                    {#each new Array(10)
-                        .fill(1)
-                        .map((_, i) => i) as lvl}
+                    {#each new Array(10).fill(1).map((_, i) => i) as lvl}
                         <div
-                            class="cursor-pointer border-2 ml-1 {lvl ===
+                            class="ml-1 cursor-pointer border-2 {lvl ===
                                 levelfilter && 'bg-blue-300'}"
                             on:click={() =>
                                 (levelfilter =
@@ -252,7 +250,7 @@
                         </div>
                     {/each}
                 </div>
-                <ul class="overflow-auto max-h-96">
+                <ul class="max-h-96 overflow-auto">
                     {#each spells.filter((s) => (srd ? s.srd : true) && !prep.other.find((c) => s.name === c.name) && (levelfilter != null ? s.level === levelfilter : true)) as spell}
                         <Spell
                             on:message={selectedSpell$}
@@ -267,7 +265,7 @@
             </div>
             <div class={showOtherSpellsSelection ? "basis-1/5" : "basis-3/5"}>
                 <p
-                    class="w-fit mx-auto h-min p-2 text-sm mb-2 text-slate-500 border-2 cursor-pointer"
+                    class="mx-auto mb-2 h-min w-fit cursor-pointer border-2 p-2 text-sm text-slate-500"
                     on:click={() =>
                         (showOtherSpellsSelection = !showOtherSpellsSelection)}
                 >
@@ -276,7 +274,7 @@
             </div>
             <div class="basis-2/5">
                 <h2>Other Spells Known</h2>
-                <ul class="overflow-auto max-h-96">
+                <ul class="max-h-96 overflow-auto">
                     {#each prep.other
                         .sort((a, b) => (a.name < b.name ? -1 : 1))
                         .sort((a, b) => (a.level < b.level ? -1 : 1)) as spell}
@@ -285,7 +283,7 @@
                             {spell}
                             click={() => {
                                 prep.other = prep.other.filter(
-                                    (p) => p.name !== spell.name
+                                    (p) => p.name !== spell.name,
                                 );
                                 trySave();
                             }}
@@ -297,11 +295,11 @@
     {/if}
     <hr />
     <div class="flex">
-        <div class="py-3 md:w-3/4 mx-auto">
+        <div class="mx-auto py-3 md:w-3/4">
             {#if selectedSpell != null}
                 <SpellDetails {deselect} spell={selectedSpell} />
             {:else}
-                <p class="text-center text-gray-500 py-28">
+                <p class="py-28 text-center text-gray-500">
                     <em
                         >Select the <i class="las la-search" /> icon from a spell
                         above to view details.</em

@@ -13,23 +13,25 @@
     let spellSlots: boolean[][] = resetAll();
 </script>
 
-<div class="border-2 p-2 basis-1/4">
-    <h2>
-        Spell Slots <button
-            class="text-sm"
-            on:click={() => (spellSlots = resetAll())}
+<div class="border-2 p-2">
+    <div class="w-100 flex justify-end">
+        <h2 class="w-3/4">Spell Slots</h2>
+        <button class="w-1/8 text-sm" on:click={() => (spellSlots = resetAll())}
             ><i class="las la-sync-alt" /></button
         >
-    </h2>
-    <div class="flex flex-col">
+        <button class="w-1/8 text-sm" on:click={() => {}}
+            ><i class="las la-eye" /></button
+        >
+    </div>
+    <div class="flex flex-row justify-around">
         {#each spellSlots as slot, slotLevel}
-            <div class="border-2 basis-1/5 w-56 mt-3">
+            <div class="mt-3 w-56 basis-1/5 border-2">
                 <h3 class="pl-2">Level {convert(slotLevel + 1)}</h3>
                 <hr />
-                <div class="flex flex-row w-56">
+                <div class="flex w-56 flex-row justify-center">
                     {#each slot as spent, i}
                         <input
-                            class="w-8 h-8 basis-1/4 mt-2"
+                            class="mt-2 h-8 w-8 basis-1/4"
                             type="checkbox"
                             checked={spellSlots[slotLevel][i]}
                             on:click={() => {
